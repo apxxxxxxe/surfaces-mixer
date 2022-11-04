@@ -27,17 +27,18 @@ func main() {
 	flag.BoolVar(&force, "f", false, "skip overwriting confirmation")
 	flag.Parse()
 
-	info, err := os.Stat(dest)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "error while parsing args: %v\n", err)
-		return
-	} else if info.IsDir() {
-		fmt.Fprintln(os.Stderr, "error while parsing args:", dest, "is directory")
+	if src == "" {
+		flag.Usage()
 		return
 	}
 
-	if src == "" {
-		flag.Usage()
+	fileInfo, _ := os.Stat(dest)
+	if fileInfo != nil && fileInfo.IsDir() {
+		fmt.Fprintln(os.Stderr, "error while parsing args:", dest, "is directory")
+		return
+	}
+	if _, err := os.Stat(filepath.Dir(dest)); err != nil {
+		fmt.Fprintf(os.Stderr, "error while parsing args: %v\n", err)
 		return
 	}
 
