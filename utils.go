@@ -2,8 +2,14 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
+
+func isFileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	return err == nil && !info.IsDir()
+}
 
 func countDigit(n int) int {
 	res := 0
