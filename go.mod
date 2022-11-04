@@ -1,4 +1,4 @@
-module github.com/apxxxxxxe/surfacesgen
+module github.com/apxxxxxxe/surfaces-yaml
 
 go 1.19
 
