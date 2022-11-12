@@ -1,4 +1,4 @@
-module github.com/apxxxxxxe/surfaces-yaml
+module github.com/apxxxxxxe/surfaces-mixer
 
 go 1.19
 
