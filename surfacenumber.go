@@ -6,48 +6,62 @@ import (
 	"strings"
 )
 
-type SurfaceList = [][][][]string
+// パーツグループ(ex: 腕)
+type Group = []Pose
 
-func formatSurfaces(data *Root, surfaces [][]string, surfaceList SurfaceList) string {
+// パーツ(ex: 後手)
+type Pose = []SurfaceNumber
+
+type SurfaceNumber = []SurfacePart
+
+type SurfacePart struct {
+	Number int
+	Digit  int
+}
+
+func formatSurfaces(data *Root, surfaces []SurfaceNumber, surfaceList []Group) string {
 	const indentCount = 2
 
 	res := "charset,UTF-8\n\ndescript\n{\n  Version,1\n}\n\n"
 
-	// Partsの定義
-	for i, sp := range surfaceList {
-		res += fmt.Sprintf("// %s\n\n", data.Parts[i].Group)
-		for j, n := range sp {
+	// partsの定義
+	for i, group := range surfaceList {
+		res += fmt.Sprintf("// %s\n\n", data.Parts[i].Name)
+		for j, pose := range group {
 			num := ""
-			for _, s := range n {
-				num += combineNum(s) + ","
+			numHistory := []SurfaceNumber{}
+			for _, number := range pose {
+				if !isIncludeSurfaceNumber(numHistory, number) {
+					numHistory = append(numHistory, number)
+					num += combineNum(number) + ","
+				}
 			}
 			num = strings.TrimSuffix(num, ",")
-			res += fmt.Sprintf("surface%s\n{\n  // %s\n%s}\n\n", num, data.Parts[i].Details[j].Name, addIndents(data.Parts[i].Details[j].Text, indentCount))
+			res += fmt.Sprintf("surface%s\n{\n  // %s\n%s}\n\n", num, data.Parts[i].Poses[j].Name, addIndents(data.Parts[i].Poses[j].Text, indentCount))
 		}
 	}
 
 	min := combineNum(surfaces[0])
 	max := combineNum(surfaces[len(surfaces)-1])
 
-	// Baseの定義
+	// baseの定義
 	res += fmt.Sprintf("\n\nsurface.append%s-%s\n{\n%s}\n", min, max, addIndents(strings.TrimSpace(data.Base), indentCount))
 
 	return res
 }
 
 // 各パーツを必要とするサーフェスの分類を行い、配列として返す
-func classifySurfaces(parts []PartGroup, surfaces [][]string) SurfaceList {
-	res := make(SurfaceList, len(parts))
+func classifySurfaces(data []GroupData, surfaces []SurfaceNumber) []Group {
+	res := make([]Group, len(data))
 	for i := range res {
-		res[i] = make([][][]string, len(parts[i].Details))
+		res[i] = make([]Pose, len(data[i].Poses))
 	}
 
-	for _, s := range surfaces {
-		for i, p := range parts {
-			for j := 1; j < len(p.Details)+1; j++ {
-				n, _ := strconv.Atoi(s[i])
-				if n == j {
-					res[i][j-1] = append(res[i][j-1], s)
+	for i, group := range data {
+		for j := range group.Poses {
+			for _, number := range surfaces {
+				if number[i].Number == j+1 {
+					res[i][j] = append(res[i][j], number)
 				}
 			}
 		}
@@ -56,21 +70,80 @@ func classifySurfaces(parts []PartGroup, surfaces [][]string) SurfaceList {
 }
 
 // パーツの種類と数から取りうるサーフェス番号を列挙する
-func generateSurfaces(parts []PartGroup, i int, tmp []string) [][]string {
-	if i == len(parts) {
-		return [][]string{tmp}
+func generateSurfaces(groupDatas []GroupData) []SurfaceNumber {
+	const min = 1
+
+	partCounts := []int{}
+	digitCounts := []int{}
+	for _, g := range groupDatas {
+		l := len(g.Poses)
+		partCounts = append(partCounts, l)
+		digitCounts = append(digitCounts, countDigit(l))
 	}
-	res := [][]string{}
-	for j := 1; j < len(parts[i].Details)+1; j++ {
-		res = append(res, generateSurfaces(parts, i+1, append(tmp, printPartNum(len(parts[i].Details), j)))...)
+
+	// 作業用変数の初期化
+	tmp := make([]SurfacePart, len(groupDatas))
+	for i := range groupDatas {
+		tmp[i] = SurfacePart{Number: min, Digit: digitCounts[i]}
 	}
-	return res
+
+	sum := 1
+	for _, c := range partCounts {
+		sum *= c
+	}
+
+	surfaceNumbers := make([]SurfaceNumber, sum)
+
+	for k := 0; k < len(surfaceNumbers); k++ {
+		// tmpはスライスなのでcopyで値をコピー
+		surfaceNumbers[k] = make([]SurfacePart, len(groupDatas))
+		copy(surfaceNumbers[k], tmp)
+
+		for i := len(groupDatas) - 1; i >= 0; i-- {
+
+			tmp[i].Number += 1
+			if tmp[i].Number > partCounts[i] {
+				// 繰り上げて続行
+				tmp[i].Number = min
+			} else {
+				// 繰り上がりがないので次ループへ
+				break
+			}
+		}
+	}
+
+	return surfaceNumbers
 }
 
-func combineNum(ary []string) string {
+func combineNum(sn SurfaceNumber) string {
 	s := ""
-	for _, a := range ary {
-		s += a
+	for _, sp := range sn {
+		s += fmt.Sprintf("%0"+strconv.Itoa(sp.Digit)+"d", sp.Number)
 	}
 	return s
+}
+
+func isIncludeSurfaceNumber(ary []SurfaceNumber, n SurfaceNumber) bool {
+	isExist := false
+	for _, s := range ary {
+		if isEqualSurfaceNumber(s, n) {
+			isExist = true
+			break
+		}
+	}
+	return isExist
+}
+
+func isEqualSurfaceNumber(a, b SurfaceNumber) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i := range a {
+		if a[i].Number != b[i].Number || a[i].Digit != b[i].Digit {
+			return false
+		}
+	}
+
+	return true
 }

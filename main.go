@@ -48,7 +48,7 @@ func main() {
 		return
 	}
 
-	surfaces := generateSurfaces(data.Parts, 0, []string{})
+	surfaces := generateSurfaces(data.Parts)
 
 	surfaceList := classifySurfaces(data.Parts, surfaces)
 

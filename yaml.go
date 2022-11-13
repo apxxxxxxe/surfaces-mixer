@@ -7,16 +7,18 @@ import (
 )
 
 type Root struct {
-	Base  string
-	Parts []PartGroup
+	Base  string      `yaml:"base"`
+	Parts []GroupData `yaml:"parts"`
 }
 
-type PartGroup struct {
-	Group   string
-	Details []struct {
-		Name string
-		Text string
-	}
+type GroupData struct {
+	Name  string     `yaml:"group"`
+	Poses []PoseData `yaml:"details"`
+}
+
+type PoseData struct {
+	Name string `yaml:"name"`
+	Text string `yaml:"text"`
 }
 
 func loadYaml(path string) (*Root, error) {
