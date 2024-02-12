@@ -14,6 +14,7 @@ func main() {
 		force bool
 		src   string
 		dest  string
+    whitelist string
 	)
 
 	wd, err := os.Getwd()
@@ -25,7 +26,10 @@ func main() {
 	flag.StringVar(&src, "i", "", "a input yaml file (required)")
 	flag.StringVar(&dest, "o", filepath.Join(wd, "surfaces.txt"), "an output file")
 	flag.BoolVar(&force, "f", false, "skip overwriting confirmation")
+  flag.StringVar(&whitelist, "w", "", "a whitelist surfaces separated by comma")
 	flag.Parse()
+
+  whitelistSurfaces := strings.Split(whitelist, ",")
 
 	if src == "" {
 		flag.Usage()
@@ -52,7 +56,7 @@ func main() {
 
 	surfaceList := classifySurfaces(data.Parts, surfaces)
 
-	result := formatSurfaces(data, surfaces, surfaceList)
+	result := formatSurfaces(data, surfaces, surfaceList, whitelistSurfaces)
 
 	if !force && isFileExists(dest) {
 		fmt.Println("overwrite", dest+"? (y/n)")

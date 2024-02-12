@@ -19,7 +19,19 @@ type SurfacePart struct {
 	Digit  int
 }
 
-func formatSurfaces(data *Root, surfaces []SurfaceNumber, surfaceList []Group) string {
+func includeWhitelist(whitelist []string, num string) bool {
+	if len(whitelist) <= 1 {
+		return true
+	}
+	for _, w := range whitelist {
+		if num == w {
+			return true
+		}
+	}
+	return false
+}
+
+func formatSurfaces(data *Root, surfaces []SurfaceNumber, surfaceList []Group, whitelist []string) string {
 	const indentCount = 2
 
 	res := "charset,UTF-8\n\ndescript\n{\n  Version,1\n}\n\n"
@@ -31,13 +43,16 @@ func formatSurfaces(data *Root, surfaces []SurfaceNumber, surfaceList []Group) s
 			num := ""
 			numHistory := []SurfaceNumber{}
 			for _, number := range pose {
-				if !isIncludeSurfaceNumber(numHistory, number) {
+				if !isIncludeSurfaceNumber(numHistory, number) &&
+					includeWhitelist(whitelist, combineNum(number)) {
 					numHistory = append(numHistory, number)
 					num += combineNum(number) + ","
 				}
 			}
-			num = strings.TrimSuffix(num, ",")
-			res += fmt.Sprintf("surface%s\n{\n  // %s\n%s}\n\n", num, data.Parts[i].Poses[j].Name, addIndents(data.Parts[i].Poses[j].Text, indentCount))
+			if num != "" {
+				num = strings.TrimSuffix(num, ",")
+				res += fmt.Sprintf("surface%s\n{\n  // %s\n%s}\n\n", num, data.Parts[i].Poses[j].Name, addIndents(data.Parts[i].Poses[j].Text, indentCount))
+			}
 		}
 	}
 
