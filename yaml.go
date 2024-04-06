@@ -9,6 +9,7 @@ import (
 type Root struct {
 	Base  string      `yaml:"base"`
 	Parts []GroupData `yaml:"parts"`
+	Raw   string      `yaml:"raw"`
 }
 
 type GroupData struct {

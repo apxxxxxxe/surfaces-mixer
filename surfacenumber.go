@@ -34,7 +34,7 @@ func includeWhitelist(whitelist []string, num string) bool {
 func formatSurfaces(data *Root, surfaces []SurfaceNumber, surfaceList []Group, whitelist []string) string {
 	const indentCount = 2
 
-	res := "charset,UTF-8\n\ndescript\n{\n  Version,1\n}\n\n"
+	res := "charset,UTF-8\n\ndescript\n{\n  Version,1\n}\n\n" + data.Raw + "\n\n"
 
 	// partsの定義
 	for i, group := range surfaceList {
