@@ -11,10 +11,10 @@ import (
 
 func main() {
 	var (
-		force bool
-		src   string
-		dest  string
-    whitelist string
+		force     bool
+		src       string
+		dest      string
+		whitelist string
 	)
 
 	wd, err := os.Getwd()
@@ -26,10 +26,10 @@ func main() {
 	flag.StringVar(&src, "i", "", "a input yaml file (required)")
 	flag.StringVar(&dest, "o", filepath.Join(wd, "surfaces.txt"), "an output file")
 	flag.BoolVar(&force, "f", false, "skip overwriting confirmation")
-  flag.StringVar(&whitelist, "w", "", "a whitelist surfaces separated by comma")
+	flag.StringVar(&whitelist, "w", "", "a whitelist surfaces separated by comma")
 	flag.Parse()
 
-  whitelistSurfaces := strings.Split(whitelist, ",")
+	whitelistSurfaces := strings.Split(whitelist, ",")
 
 	if src == "" {
 		flag.Usage()
@@ -52,11 +52,15 @@ func main() {
 		return
 	}
 
-	surfaces := generateSurfaces(data.Parts)
+	result := renderRaw(data.Raw)
+	for _, character := range data.Characters {
+		surfaces := generateSurfaces(character.Parts)
 
-	surfaceList := classifySurfaces(data.Parts, surfaces)
+		surfaceList := classifySurfaces(character.Parts, surfaces)
 
-	result := formatSurfaces(data, surfaces, surfaceList, whitelistSurfaces)
+		result += formatSurfaces(&character, surfaces, surfaceList, whitelistSurfaces) + "\n\n"
+	}
+	result = strings.TrimRight(result, "\n")
 
 	if !force && isFileExists(dest) {
 		fmt.Println("overwrite", dest+"? (y/n)")

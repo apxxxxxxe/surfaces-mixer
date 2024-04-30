@@ -7,9 +7,13 @@ import (
 )
 
 type Root struct {
+	Characters []Character `yaml:"characters"`
+	Raw        string      `yaml:"raw"`
+}
+
+type Character struct {
 	Base  string      `yaml:"base"`
 	Parts []GroupData `yaml:"parts"`
-	Raw   string      `yaml:"raw"`
 }
 
 type GroupData struct {

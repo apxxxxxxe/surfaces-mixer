@@ -31,14 +31,18 @@ func includeWhitelist(whitelist []string, num string) bool {
 	return false
 }
 
-func formatSurfaces(data *Root, surfaces []SurfaceNumber, surfaceList []Group, whitelist []string) string {
+func renderRaw(raw string) string {
+	return "charset,UTF-8\n\ndescript\n{\n  Version,1\n}\n\n" + raw + "\n\n"
+}
+
+func formatSurfaces(character *Character, surfaces []SurfaceNumber, surfaceList []Group, whitelist []string) string {
 	const indentCount = 2
 
-	res := "charset,UTF-8\n\ndescript\n{\n  Version,1\n}\n\n" + data.Raw + "\n\n"
+	var res string
 
 	// partsの定義
 	for i, group := range surfaceList {
-		res += fmt.Sprintf("// %s\n\n", data.Parts[i].Name)
+		res += fmt.Sprintf("// %s\n\n", character.Parts[i].Name)
 		for j, pose := range group {
 			num := ""
 			numHistory := []SurfaceNumber{}
@@ -51,7 +55,7 @@ func formatSurfaces(data *Root, surfaces []SurfaceNumber, surfaceList []Group, w
 			}
 			if num != "" {
 				num = strings.TrimSuffix(num, ",")
-				res += fmt.Sprintf("surface%s\n{\n  // %s\n%s}\n\n", num, data.Parts[i].Poses[j].Name, addIndents(data.Parts[i].Poses[j].Text, indentCount))
+				res += fmt.Sprintf("surface%s\n{\n  // %s\n%s}\n\n", num, character.Parts[i].Poses[j].Name, addIndents(character.Parts[i].Poses[j].Text, indentCount))
 			}
 		}
 	}
@@ -60,7 +64,7 @@ func formatSurfaces(data *Root, surfaces []SurfaceNumber, surfaceList []Group, w
 	max := combineNum(surfaces[len(surfaces)-1])
 
 	// baseの定義
-	res += fmt.Sprintf("\n\nsurface.append%s-%s\n{\n%s}\n", min, max, addIndents(strings.TrimSpace(data.Base), indentCount))
+	res += fmt.Sprintf("\n\nsurface.append%s-%s\n{\n%s}\n", min, max, addIndents(strings.TrimSpace(character.Base), indentCount))
 
 	return res
 }
