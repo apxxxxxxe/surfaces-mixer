@@ -9,12 +9,16 @@ import (
 	"strings"
 )
 
+const version = "0.3.0"
+
 func main() {
 	var (
-		force     bool
-		src       string
-		dest      string
-		whitelist string
+		force       bool
+		src         string
+		dest        string
+		whitelist   string
+		help        bool
+		showVersion bool
 	)
 
 	wd, err := os.Getwd()
@@ -27,7 +31,19 @@ func main() {
 	flag.StringVar(&dest, "o", filepath.Join(wd, "surfaces.txt"), "an output file")
 	flag.BoolVar(&force, "f", false, "skip overwriting confirmation")
 	flag.StringVar(&whitelist, "w", "", "a whitelist surfaces separated by comma")
+	flag.BoolVar(&help, "h", false, "show help")
+	flag.BoolVar(&showVersion, "v", false, "show version")
 	flag.Parse()
+
+	if help {
+		flag.Usage()
+		return
+	}
+
+	if showVersion {
+		fmt.Println(version)
+		return
+	}
 
 	whitelistSurfaces := strings.Split(whitelist, ",")
 
