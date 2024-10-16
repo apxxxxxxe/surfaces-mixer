@@ -32,7 +32,7 @@ func includeWhitelist(whitelist []string, num string) bool {
 }
 
 func renderRaw(raw string) string {
-	return "charset,UTF-8\n\ndescript\n{\n  Version,1\n}\n\n" + raw + "\n\n"
+	return "charset,UTF-8\n\n" + raw + "\n\n"
 }
 
 func formatSurfaces(character *Character, surfaces []SurfaceNumber, surfaceList []Group, whitelist []string) string {
