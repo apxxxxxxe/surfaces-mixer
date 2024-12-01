@@ -1,7 +1,10 @@
 # サンプルファイル
 # 生成結果はsurfaces_sample.txt
 
-# yamlファイルはparts,baseの２分類で構成される。
+# yamlファイルはparts,base,rawの３分類で構成される。
+#
+# - raw:  descriptなど、組み合わせに関係のない定義。
+#         ここに記述された内容はsurfaces.txtの冒頭にそのまま出力される。
 #
 # - base: 頭や胴体など、全サーフェスに共通するパーツの定義。
 #         [構造]
@@ -16,6 +19,11 @@
 #                 text: ...  # そのパーツのサーフェス定義。
 
 raw: |
+  descript
+  {
+    Version,1
+  }
+
   surface100000 {
     // 透明サーフェス
     animation500200.interval,runonce
