@@ -46,4 +46,4 @@ surfaces.txtに変換した結果は[こちら](https://github.com/apxxxxxxe/sur
 ```
 go install github.com/apxxxxxxe/surfaces-mixer@latest
 ```
-または[Releases(準備中)](https://github.com/apxxxxxxe/surfaces-mixer/releases)から最新版をダウンロードしてください。
+または[Releases](https://github.com/apxxxxxxe/surfaces-mixer/releases)から最新版をダウンロードしてください。
