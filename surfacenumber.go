@@ -32,7 +32,11 @@ func includeWhitelist(whitelist []string, num string) bool {
 }
 
 func renderRaw(raw string) string {
-	return "charset,UTF-8\n\n" + raw + "\n\n"
+	r := ""
+	if raw != "" {
+		r = strings.TrimSpace(raw) + "\n\n"
+	}
+	return "charset,UTF-8\n\n" + r
 }
 
 func formatSurfaces(character *Character, surfaces []SurfaceNumber, surfaceList []Group, whitelist []string) string {
