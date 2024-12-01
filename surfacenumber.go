@@ -19,7 +19,31 @@ type SurfacePart struct {
 	Digit  int
 }
 
-func includeWhitelist(whitelist []string, num string) bool {
+func generateSurfaceOffset(characters []Character) (int, error) {
+	maxInAll := 0
+	for _, c := range characters {
+		surfaces := generateSurfaces(c.Parts)
+		max, err := combineNum(surfaces[len(surfaces)-1])
+		if err != nil {
+			return 0, err
+		}
+		if max > maxInAll {
+			maxInAll = max
+		}
+	}
+
+	offset := 0
+
+	digit := countDigit(maxInAll)
+	offset = 1
+	for j := 0; j < digit; j++ {
+		offset *= 10
+	}
+
+	return offset, nil
+}
+
+func isIncludedNumberInWhitelist(whitelist []string, num string) bool {
 	if len(whitelist) <= 1 {
 		return true
 	}
@@ -39,7 +63,13 @@ func renderRaw(raw string) string {
 	return "charset,UTF-8\n\n" + r
 }
 
-func formatSurfaces(character *Character, surfaces []SurfaceNumber, surfaceList []Group, whitelist []string, offset int) (string, int) {
+func formatSurfaces(
+	character *Character,
+	surfaces []SurfaceNumber,
+	surfaceList []Group,
+	whitelist []string,
+	offset int,
+) string {
 	const indentCount = 2
 
 	var res string
@@ -57,7 +87,7 @@ func formatSurfaces(character *Character, surfaces []SurfaceNumber, surfaceList 
 					continue
 				}
 				if !isIncludeSurfaceNumber(numHistory, number) &&
-					includeWhitelist(whitelist, fmt.Sprint(n)) {
+					isIncludedNumberInWhitelist(whitelist, fmt.Sprint(n)) {
 					numHistory = append(numHistory, number)
 					num += fmt.Sprintf("%d,", n+offset)
 				}
@@ -84,7 +114,7 @@ func formatSurfaces(character *Character, surfaces []SurfaceNumber, surfaceList 
 		res += fmt.Sprintf("surface.append%d-%d\n{\n%s}\n", min, max, addIndents(base, indentCount))
 	}
 
-	return res, max
+	return res
 }
 
 // 各パーツを必要とするサーフェスの分類を行い、配列として返す

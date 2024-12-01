@@ -69,28 +69,18 @@ func main() {
 	}
 
 	result := renderRaw(data.Raw)
-	max := 0
-	offset := 0
-	offsetOrigin := 0
+	offsetOrigin, err := generateSurfaceOffset(data.Characters)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error while generating surface offset: %v\n", err)
+		return
+	}
 	for i, character := range data.Characters {
 		surfaces := generateSurfaces(character.Parts)
 
 		surfaceList := classifySurfaces(character.Parts, surfaces)
 
-		if i > 0 {
-			if i == 1 {
-				digit := countDigit(max)
-				offset = 1
-				for j := 0; j < digit; j++ {
-					offset *= 10
-				}
-				offsetOrigin = offset
-			} else {
-				offset += offsetOrigin
-			}
-		}
 		var r string
-		r, max = formatSurfaces(&character, surfaces, surfaceList, whitelistSurfaces, offset)
+		r = formatSurfaces(&character, surfaces, surfaceList, whitelistSurfaces, offsetOrigin*i)
 		result += r + "\n\n"
 	}
 	result = strings.TrimRight(result, "\n")
