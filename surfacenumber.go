@@ -81,7 +81,7 @@ func formatSurfaces(character *Character, surfaces []SurfaceNumber, surfaceList 
 	// baseの定義
 	base := strings.TrimSpace(character.Base)
 	if base != "" {
-		res += fmt.Sprintf("\n\nsurface.append%d-%d\n{\n%s}\n", min, max, addIndents(base, indentCount))
+		res += fmt.Sprintf("surface.append%d-%d\n{\n%s}\n", min, max, addIndents(base, indentCount))
 	}
 
 	return res, max
