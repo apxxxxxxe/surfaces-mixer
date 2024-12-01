@@ -42,5 +42,8 @@ surfaces.txtに変換した結果は[こちら](https://github.com/apxxxxxxe/sur
 ### そんなにいっぱいサーフェスを用意して、動作は重くならないの？
 - SSPにおいて、サーフェス定義の数が多くとも、動作パフォーマンスにほぼ影響しないようです（[Reference](https://twitter.com/ponapalt/status/1587364571224092673)）
 
-## インストール
-[Releases](https://github.com/apxxxxxxe/surfaces-mixer/releases)から最新版をダウンロードしてください。
+## ダウンロード
+[Releases]()から最新版をダウンロードしてください。
+https://github.com/apxxxxxxe/surfaces-mixer/releases/download/v2.0.1/surfaces-mixer.exe
+[![surfaces-mixer.exe](https://img.shields.io/github/v/release/apxxxxxxe/surfaces-mixer?color=%2367a5cf&label=surfaces-mixer.exe&logo=github)](https://github.com/apxxxxxxe/surfaces-mixer/releases/latest/download/surfaces-mixer.exe) 
+
