@@ -43,7 +43,4 @@ surfaces.txtに変換した結果は[こちら](https://github.com/apxxxxxxe/sur
 - SSPにおいて、サーフェス定義の数が多くとも、動作パフォーマンスにほぼ影響しないようです（[Reference](https://twitter.com/ponapalt/status/1587364571224092673)）
 
 ## インストール
-```
-go install github.com/apxxxxxxe/surfaces-mixer@latest
-```
-または[Releases](https://github.com/apxxxxxxe/surfaces-mixer/releases)から最新版をダウンロードしてください。
+[Releases](https://github.com/apxxxxxxe/surfaces-mixer/releases)から最新版をダウンロードしてください。
