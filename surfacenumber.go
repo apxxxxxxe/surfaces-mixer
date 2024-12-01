@@ -39,7 +39,7 @@ func renderRaw(raw string) string {
 	return "charset,UTF-8\n\n" + r
 }
 
-func formatSurfaces(character *Character, surfaces []SurfaceNumber, surfaceList []Group, whitelist []string) string {
+func formatSurfaces(character *Character, surfaces []SurfaceNumber, surfaceList []Group, whitelist []string, offset int) (string, int) {
 	const indentCount = 2
 
 	var res string
@@ -51,10 +51,15 @@ func formatSurfaces(character *Character, surfaces []SurfaceNumber, surfaceList 
 			num := ""
 			numHistory := []SurfaceNumber{}
 			for _, number := range pose {
+				n, err := combineNum(number)
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
 				if !isIncludeSurfaceNumber(numHistory, number) &&
-					includeWhitelist(whitelist, combineNum(number)) {
+					includeWhitelist(whitelist, fmt.Sprint(n)) {
 					numHistory = append(numHistory, number)
-					num += combineNum(number) + ","
+					num += fmt.Sprintf("%d,", n+offset)
 				}
 			}
 			if num != "" {
@@ -64,13 +69,22 @@ func formatSurfaces(character *Character, surfaces []SurfaceNumber, surfaceList 
 		}
 	}
 
-	min := combineNum(surfaces[0])
-	max := combineNum(surfaces[len(surfaces)-1])
+	min, err := combineNum(surfaces[0])
+	if err != nil {
+		fmt.Println(err)
+	}
+	max, err := combineNum(surfaces[len(surfaces)-1])
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	// baseの定義
-	res += fmt.Sprintf("\n\nsurface.append%s-%s\n{\n%s}\n", min, max, addIndents(strings.TrimSpace(character.Base), indentCount))
+	base := strings.TrimSpace(character.Base)
+	if base != "" {
+		res += fmt.Sprintf("\n\nsurface.append%d-%d\n{\n%s}\n", min, max, addIndents(base, indentCount))
+	}
 
-	return res
+	return res, max
 }
 
 // 各パーツを必要とするサーフェスの分類を行い、配列として返す
@@ -138,12 +152,12 @@ func generateSurfaces(groupDatas []GroupData) []SurfaceNumber {
 	return surfaceNumbers
 }
 
-func combineNum(sn SurfaceNumber) string {
+func combineNum(sn SurfaceNumber) (int, error) {
 	s := ""
 	for _, sp := range sn {
 		s += fmt.Sprintf("%0"+strconv.Itoa(sp.Digit)+"d", sp.Number)
 	}
-	return s
+	return strconv.Atoi(s)
 }
 
 func isIncludeSurfaceNumber(ary []SurfaceNumber, n SurfaceNumber) bool {
