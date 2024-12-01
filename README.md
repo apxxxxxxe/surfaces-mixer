@@ -30,8 +30,22 @@ YAML形式で定義されたサーフェスをsurfaces.txt形式に変換しま�
 [サンプルファイル](https://github.com/apxxxxxxe/surfaces-mixer/blob/main/sample.yaml)をご参照ください。変換結果のsurfaces.txtは[こちら](https://github.com/apxxxxxxe/surfaces-mixer/blob/main/surfaces_sample.txt)です。本ファイルは制作中の自作ゴースト[Crave The Grave](https://github.com/apxxxxxxe/Haine)で実際に使用されています。
 
 ## FAQ
-### 多数のサーフェスを用意すると動作は重くならないのか？
-- SSPにおいて、サーフェス定義の数が多くとも動作パフォーマンスにほとんど影響しません（[Reference](https://twitter.com/ponapalt/status/1587364571224092673)）。
+**Q.** 多数のサーフェスを用意すると動作は重くならないのか？  
+**A.** SSPにおいて、サーフェス定義の数が多くとも動作パフォーマンスにほとんど影響しません（[Reference](https://twitter.com/ponapalt/status/1587364571224092673)）。
 
 ## ダウンロード
 [![surfaces-mixer.exe](https://img.shields.io/github/v/release/apxxxxxxe/surfaces-mixer?color=%2367a5cf&label=surfaces-mixer.exe&logo=github)](https://github.com/apxxxxxxe/surfaces-mixer/releases/latest/download/surfaces-mixer.exe)
+
+## 使用法
+```
+Usage of surfaces-mixer.exe:
+  -f    skip overwriting confirmation
+  -h    show help
+  -i string
+        a input yaml file (required)
+  -o string
+        an output file path
+  -v    show version
+  -w string
+        a whitelist surfaces separated by comma
+```
