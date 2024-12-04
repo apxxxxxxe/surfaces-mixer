@@ -1,7 +1,7 @@
 # サンプルファイル
 # 生成結果はsurfaces_sample.txt
 
-# yamlファイルはparts,base,rawの３分類で構成される。
+# yamlファイルはraw,charactersの２分類を起点に構成される。
 #
 # - raw:  descriptなど、組み合わせに関係のない定義。
 #         ここに記述された内容はsurfaces.txtの冒頭にそのまま出力される。
