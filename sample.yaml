@@ -23,7 +23,7 @@
 raw: |
   descript
   {
-    Version,1
+    version,1
   }
 
 characters:
